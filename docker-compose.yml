@@ -12,7 +12,9 @@ services:
     environment:
       - PORT=8080
       - DB_PATH=/app/data/minimal_write.db
+      - JWT_SECRET=change-me-to-a-long-secure-random-string
     restart: unless-stopped
+
 
   frontend:
     build:

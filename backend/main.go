@@ -16,6 +16,14 @@ func main() {
 		port = "8080"
 	}
 
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret != "" {
+		jwtKey = []byte(jwtSecret)
+	} else {
+		log.Println("WARNING: JWT_SECRET environment variable is not set. Using default development key.")
+	}
+
+
 	dbPath := os.Getenv("DB_PATH")
 	if dbPath == "" {
 		dbPath = "./minimal_write.db"
