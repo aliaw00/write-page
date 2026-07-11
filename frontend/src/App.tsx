@@ -575,7 +575,7 @@ export default function App() {
         setDarkMode(prev => !prev);
       }
       // Toggle preview (Ctrl + P)
-      if (e.ctrlKey && e.key.toLowerCase() === 'p') {
+      if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'p') {
         e.preventDefault();
         setPreviewMode(prev => {
           if (prev === 'editor') return 'split';
@@ -584,17 +584,17 @@ export default function App() {
         });
       }
       // Save file (Ctrl + S)
-      if (e.ctrlKey && e.key.toLowerCase() === 's') {
+      if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 's') {
         e.preventDefault();
         handleDownload('md');
       }
       // Open file (Ctrl + O)
-      if (e.ctrlKey && e.key.toLowerCase() === 'o') {
+      if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'o') {
         e.preventDefault();
         handleOpenFile();
       }
       // New file (Ctrl + N)
-      if (e.ctrlKey && e.key.toLowerCase() === 'n') {
+      if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === 'n') {
         e.preventDefault();
         handleNewDocument();
       }
@@ -621,6 +621,16 @@ export default function App() {
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'z') {
         e.preventDefault();
         setZenMode(prev => !prev);
+      }
+      // Toggle settings sidebar (Ctrl + Shift + S)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        setSidebarOpen(prev => !prev);
+      }
+      // Toggle cloud sync modal (Ctrl + Shift + Y)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        setSyncModalOpen(prev => !prev);
       }
     };
 
@@ -1400,6 +1410,14 @@ export default function App() {
                 <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
                   <span className="text-zinc-500">Toggle Zen Mode (Centered Focus)</span>
                   <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + Z</kbd>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                  <span className="text-zinc-500">Toggle Settings Sidebar</span>
+                  <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + S</kbd>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                  <span className="text-zinc-500">Toggle Cloud Sync Modal</span>
+                  <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + Y</kbd>
                 </div>
               </div>
             </div>
