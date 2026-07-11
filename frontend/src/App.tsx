@@ -30,7 +30,12 @@ import {
   LogOut,
   BookOpen,
   Maximize,
-  Minimize
+  Minimize,
+  Link,
+  Strikethrough,
+  Code,
+  CheckSquare,
+  Minus
 } from 'lucide-react';
 import { marked } from 'marked';
 import { playKeyClick, playBell } from './utils/typewriter';
@@ -105,20 +110,25 @@ export default function App() {
     spellCheck: boolean;
     focusMode: boolean;
     writingGoal: number;
+    showFormattingToolbar: boolean;
+    showWordCount: boolean;
   }
 
   const [settings, setSettings] = useState<EditorSettings>(() => {
     const saved = localStorage.getItem('editor_settings');
-    return saved ? JSON.parse(saved) : {
-      fontFamily: 'serif', // serif, sans, mono
-      fontSize: 18,       // 14, 16, 18, 20, 24, 28
-      lineHeight: 'normal', // tight (1.3), normal (1.65), loose (2.0)
-      maxWidth: 'medium', // narrow (600px), medium (800px), wide (1000px), full (100%)
+    const defaults = {
+      fontFamily: 'serif' as const,
+      fontSize: 18,
+      lineHeight: 'normal' as const,
+      maxWidth: 'medium' as const,
       typewriterSounds: false,
       spellCheck: true,
-      focusMode: false, // Fades everything but current paragraph
-      writingGoal: 0, // Word count goal
+      focusMode: false,
+      writingGoal: 0,
+      showFormattingToolbar: true,
+      showWordCount: true,
     };
+    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
   });
 
   // --- Document State ---
@@ -587,6 +597,16 @@ export default function App() {
         } else {
           document.exitFullscreen().catch(() => {});
         }
+      }
+      // Toggle formatting toolbar (Ctrl + Shift + T)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 't') {
+        e.preventDefault();
+        setSettings(prev => ({ ...prev, showFormattingToolbar: !prev.showFormattingToolbar }));
+      }
+      // Toggle word count (Ctrl + Shift + W)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'w') {
+        e.preventDefault();
+        setSettings(prev => ({ ...prev, showWordCount: !prev.showWordCount }));
       }
     };
 
@@ -1143,29 +1163,41 @@ export default function App() {
       </main>
 
       {/* --- FORMATTING TOOLBAR (BOTTOM CENTER) --- */}
-      <div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1a1a] shadow-xl border border-zinc-150 dark:border-zinc-800 px-4 py-2 rounded-full flex items-center space-x-1 z-35 transition-all duration-300 no-print max-w-[90vw] overflow-x-auto no-scrollbar flex-nowrap ${
-          uiVisible ? 'opacity-100 transform -translate-x-1/2' : 'opacity-0 translate-y-3 pointer-events-none'
-        }`}
-      >
-        <button onClick={() => applyFormatting('**', '**')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Bold"><Bold className="w-4 h-4" /></button>
-        <button onClick={() => applyFormatting('*', '*')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Italic"><Italic className="w-4 h-4" /></button>
-        <button onClick={() => applyFormatting('# ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Heading 1"><Heading1 className="w-4 h-4" /></button>
-        <button onClick={() => applyFormatting('## ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Heading 2"><Heading2 className="w-4 h-4" /></button>
-        <button onClick={() => applyFormatting('- ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Bullet List"><List className="w-4 h-4" /></button>
-        <button onClick={() => applyFormatting('> ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Quote"><Quote className="w-4 h-4" /></button>
-        <button onClick={() => applyFormatting('```\n', '\n```')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Code Block"><FileCode className="w-4 h-4" /></button>
-      </div>
+      {settings.showFormattingToolbar && (
+        <div
+          className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1a1a] shadow-xl border border-zinc-150 dark:border-zinc-800 px-4 py-2 rounded-full flex items-center space-x-1 z-35 transition-all duration-300 no-print max-w-[90vw] overflow-x-auto no-scrollbar flex-nowrap ${
+            uiVisible ? 'opacity-100 transform -translate-x-1/2' : 'opacity-0 translate-y-3 pointer-events-none'
+          }`}
+        >
+          <button onClick={() => applyFormatting('**', '**')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Bold"><Bold className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('*', '*')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Italic"><Italic className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('# ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Heading 1"><Heading1 className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('## ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Heading 2"><Heading2 className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('- ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-855 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Bullet List"><List className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('> ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Quote"><Quote className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('```\n', '\n```')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Code Block"><FileCode className="w-4 h-4" /></button>
+          
+          <span className="w-px h-4 bg-zinc-200 dark:bg-zinc-800 mx-1 flex-shrink-0" />
+          
+          <button onClick={() => applyFormatting('[', '](url)')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-855 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Link"><Link className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('~~', '~~')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Strikethrough"><Strikethrough className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('`', '`')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Inline Code"><Code className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('- [ ] ')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Task List"><CheckSquare className="w-4 h-4" /></button>
+          <button onClick={() => applyFormatting('\n---\n')} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200" title="Horizontal Line"><Minus className="w-4 h-4" /></button>
+        </div>
+      )}
 
       {/* --- WORD & LINE COUNTS (BOTTOM RIGHT) --- */}
-      <footer
-        className={`fixed bottom-6 right-6 text-xs text-zinc-400 dark:text-zinc-550 z-30 transition-all duration-300 bg-white/60 dark:bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-md border border-zinc-150/40 dark:border-zinc-800/40 no-print ${
-          uiVisible ? 'opacity-100 transform-none' : 'opacity-0 translate-y-1 pointer-events-none'
-        }`}
-      >
-        <span className="font-medium mr-3">{counts.words} words</span>
-        <span className="font-medium">{counts.chars} characters</span>
-      </footer>
+      {settings.showWordCount && (
+        <footer
+          className={`fixed bottom-6 right-6 text-xs text-zinc-400 dark:text-zinc-550 z-30 transition-all duration-300 bg-white/60 dark:bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-md border border-zinc-150/40 dark:border-zinc-800/40 no-print ${
+            uiVisible ? 'opacity-100 transform-none' : 'opacity-0 translate-y-1 pointer-events-none'
+          }`}
+        >
+          <span className="font-medium mr-3">{counts.words} words</span>
+          <span className="font-medium">{counts.chars} characters</span>
+        </footer>
+      )}
 
       {/* --- MODAL: SYNC & AUTH --- */}
       {syncModalOpen && (
@@ -1331,6 +1363,14 @@ export default function App() {
                 <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
                   <span className="text-zinc-500">Toggle Dark / Light Mode</span>
                   <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + D</kbd>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                  <span className="text-zinc-500">Toggle Accessibility Navbar</span>
+                  <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + T</kbd>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                  <span className="text-zinc-500">Toggle Word / Line Count</span>
+                  <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + W</kbd>
                 </div>
               </div>
             </div>
