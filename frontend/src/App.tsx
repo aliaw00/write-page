@@ -698,7 +698,7 @@ export default function App() {
 
   // --- Main App View ---
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-[#121212] text-zinc-200' : 'bg-[#fcfbfa] text-zinc-800'} transition-colors duration-300 flex flex-col font-sans relative`}>
+    <div className={`h-screen ${darkMode ? 'bg-[#121212] text-zinc-200' : 'bg-[#fcfbfa] text-zinc-800'} transition-colors duration-300 flex flex-col font-sans relative overflow-hidden`}>
       
       {/* Hidden input for local file pick */}
       <input
@@ -1055,7 +1055,7 @@ export default function App() {
       </div>
 
       {/* --- MAIN WRITING CANVAS --- */}
-      <main className="flex-1 flex flex-col pt-16 pb-20 relative w-full h-full">
+      <main className="flex-1 flex flex-col pt-16 pb-6 relative w-full min-h-0 overflow-hidden">
         {/* Progress bar for Writing Word Goal */}
         {settings.writingGoal > 0 && (
           <div className="fixed top-14 left-0 right-0 h-1 bg-zinc-200 dark:bg-zinc-800 z-20 no-print">
@@ -1067,7 +1067,7 @@ export default function App() {
           </div>
         )}
 
-        <div className="flex-1 flex flex-col md:flex-row items-stretch justify-center h-full w-full">
+        <div className="flex-1 flex flex-col md:flex-row items-stretch justify-center w-full min-h-0 overflow-hidden">
           {/* EDITOR SCREEN */}
           {(previewMode === 'editor' || previewMode === 'split') && (
             <div
