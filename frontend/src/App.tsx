@@ -74,6 +74,17 @@ export default function App() {
   const [syncModalOpen, setSyncModalOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+
+  const [isMobile, setIsMobile] = useState<boolean>(() => window.innerWidth < 768);
+  const [mobileTab, setMobileTab] = useState<'write' | 'preview'>('write');
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   // UI chrome fade state
   const [uiVisible, setUiVisible] = useState(true);
@@ -813,7 +824,7 @@ export default function App() {
 
       {/* --- SIDEBAR DRAWER (Documents & Styles) --- */}
       <div
-        className={`fixed inset-y-0 right-0 w-80 bg-white dark:bg-[#1a1a1a] shadow-2xl border-l border-zinc-150 dark:border-zinc-800 z-50 transform transition-transform duration-350 ease-out no-print ${
+        className={`fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-[#1a1a1a] shadow-2xl border-l border-zinc-150 dark:border-zinc-800 z-50 transform transition-transform duration-350 ease-out no-print ${
           sidebarOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -1067,9 +1078,35 @@ export default function App() {
           </div>
         )}
 
+        {/* Mobile Write/Preview Tabs */}
+        {isMobile && (
+          <div className="flex border-b border-zinc-150 dark:border-zinc-800/80 bg-white/60 dark:bg-black/30 backdrop-blur no-print select-none">
+            <button
+              onClick={() => setMobileTab('write')}
+              className={`flex-1 py-2.5 text-center text-xs font-bold uppercase tracking-wider transition-colors ${
+                mobileTab === 'write'
+                  ? 'text-amber-500 border-b-2 border-amber-500'
+                  : 'text-zinc-400 dark:text-zinc-650'
+              }`}
+            >
+              Write
+            </button>
+            <button
+              onClick={() => setMobileTab('preview')}
+              className={`flex-1 py-2.5 text-center text-xs font-bold uppercase tracking-wider transition-colors ${
+                mobileTab === 'preview'
+                  ? 'text-amber-500 border-b-2 border-amber-500'
+                  : 'text-zinc-400 dark:text-zinc-650'
+              }`}
+            >
+              Preview
+            </button>
+          </div>
+        )}
+
         <div className="flex-1 flex flex-col md:flex-row items-stretch justify-center w-full min-h-0 overflow-hidden">
           {/* EDITOR SCREEN */}
-          {(previewMode === 'editor' || previewMode === 'split') && (
+          {((!isMobile && (previewMode === 'editor' || previewMode === 'split')) || (isMobile && mobileTab === 'write')) && (
             <div
               className={`flex-1 flex flex-col items-center overflow-y-auto px-6 h-full custom-scrollbar transition-opacity duration-300 ${
                 settings.focusMode && !uiVisible ? 'opacity-85' : 'opacity-100'
@@ -1089,8 +1126,8 @@ export default function App() {
           )}
 
           {/* SPLIT / PREVIEW SCREEN */}
-          {(previewMode === 'preview' || previewMode === 'split') && (
-            <div className={`flex-1 overflow-y-auto px-8 py-6 h-full border-t md:border-t-0 md:border-l border-zinc-200 dark:border-zinc-800 custom-scrollbar flex flex-col items-center bg-[#fcfbfa]/20 dark:bg-black/10`}>
+          {((!isMobile && (previewMode === 'preview' || previewMode === 'split')) || (isMobile && mobileTab === 'preview')) && (
+            <div className={`flex-1 overflow-y-auto px-8 py-6 h-full border-t-0 md:border-l border-zinc-200 dark:border-zinc-800 custom-scrollbar flex flex-col items-center bg-[#fcfbfa]/20 dark:bg-black/10`}>
               <div className={`w-full ${maxWidthClass} prose prose-zinc dark:prose-invert font-serif-editor`}>
                 <h1 className="text-3xl font-extrabold pb-4 border-b border-zinc-100 dark:border-zinc-800 leading-tight">
                   {activeDoc?.title}
@@ -1107,7 +1144,7 @@ export default function App() {
 
       {/* --- FORMATTING TOOLBAR (BOTTOM CENTER) --- */}
       <div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1a1a] shadow-xl border border-zinc-150 dark:border-zinc-800 px-4 py-2 rounded-full flex items-center space-x-1 z-35 transition-all duration-300 no-print ${
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1a1a] shadow-xl border border-zinc-150 dark:border-zinc-800 px-4 py-2 rounded-full flex items-center space-x-1 z-35 transition-all duration-300 no-print max-w-[90vw] overflow-x-auto no-scrollbar flex-nowrap ${
           uiVisible ? 'opacity-100 transform -translate-x-1/2' : 'opacity-0 translate-y-3 pointer-events-none'
         }`}
       >
