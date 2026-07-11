@@ -662,7 +662,7 @@ export default function App() {
   // --- Reader Mode View ---
   if (isReaderMode) {
     return (
-      <div className={`min-h-screen ${darkMode ? 'bg-[#121212] text-zinc-200' : 'bg-[#fcfbfa] text-zinc-800'} py-12 px-6 flex flex-col items-center transition-colors duration-300`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-[#0d0e12] text-[#dbdbdf]' : 'bg-[#f5f2eb] text-[#2b2622]'} py-12 px-6 flex flex-col items-center transition-colors duration-300`}>
         {loadingShared ? (
           <div className="flex flex-col items-center justify-center flex-1 space-y-4">
             <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
@@ -729,7 +729,7 @@ export default function App() {
 
   // --- Main App View ---
   return (
-    <div className={`h-screen ${darkMode ? 'bg-[#121212] text-zinc-200' : 'bg-[#fcfbfa] text-zinc-800'} transition-colors duration-300 flex flex-col font-sans relative overflow-hidden`}>
+    <div className={`h-screen ${darkMode ? 'bg-[#0d0e12] text-[#dbdbdf]' : 'bg-[#f5f2eb] text-[#2b2622]'} transition-colors duration-300 flex flex-col font-sans relative overflow-hidden`}>
       
       {/* Hidden input for local file pick */}
       <input
@@ -750,11 +750,11 @@ export default function App() {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-850 rounded-full transition-colors relative"
+            className="p-2 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-full transition-colors relative"
             title="My Documents"
           >
             <FileText className="w-5 h-5 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200" />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-white dark:ring-[#121212]"></span>
+            <span className="absolute top-0 right-0 w-2 h-2 bg-amber-500 rounded-full ring-2 ring-[#faf8f5] dark:ring-[#0d0e12]"></span>
           </button>
           <span className="text-sm font-semibold tracking-wide truncate max-w-[200px] sm:max-w-xs text-zinc-650 dark:text-zinc-350">
             {activeDoc?.title}
@@ -766,7 +766,7 @@ export default function App() {
           {/* Sync Button / Indicator */}
           <button
             onClick={() => setSyncModalOpen(true)}
-            className={`p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-850 transition-colors flex items-center space-x-1.5 ${
+            className={`p-2 rounded-full hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-colors flex items-center space-x-1.5 ${
               token ? 'text-amber-500' : 'text-zinc-400 hover:text-zinc-600'
             }`}
             title={token ? `Logged in as ${username}. Click for sync options.` : "Enable Cloud Sync"}
@@ -786,7 +786,7 @@ export default function App() {
           {/* Theme Toggle */}
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-550 dark:text-zinc-400"
+            className="p-2 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-full transition-colors text-zinc-550 dark:text-zinc-400"
             title="Toggle Theme"
           >
             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -795,7 +795,7 @@ export default function App() {
           {/* Fullscreen Toggle */}
           <button
             onClick={toggleFullscreen}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-850 rounded-full transition-colors text-zinc-550 dark:text-zinc-400"
+            className="p-2 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-full transition-colors text-zinc-550 dark:text-zinc-400"
             title="Toggle Fullscreen"
           >
             {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
@@ -844,7 +844,7 @@ export default function App() {
 
       {/* --- SIDEBAR DRAWER (Documents & Styles) --- */}
       <div
-        className={`fixed inset-y-0 right-0 w-full sm:w-80 bg-white dark:bg-[#1a1a1a] shadow-2xl border-l border-zinc-150 dark:border-zinc-800 z-50 transform transition-transform duration-350 ease-out no-print ${
+        className={`fixed inset-y-0 right-0 w-full sm:w-80 bg-[#faf8f5] dark:bg-[#13151a] shadow-2xl border-l border-zinc-150 dark:border-zinc-800/60 z-50 transform transition-transform duration-350 ease-out no-print ${
           sidebarOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -1147,7 +1147,7 @@ export default function App() {
 
           {/* SPLIT / PREVIEW SCREEN */}
           {((!isMobile && (previewMode === 'preview' || previewMode === 'split')) || (isMobile && mobileTab === 'preview')) && (
-            <div className={`flex-1 overflow-y-auto px-8 py-6 h-full border-t-0 md:border-l border-zinc-200 dark:border-zinc-800 custom-scrollbar flex flex-col items-center bg-[#fcfbfa]/20 dark:bg-black/10`}>
+            <div className={`flex-1 overflow-y-auto px-8 py-6 h-full border-t-0 md:border-l border-zinc-200 dark:border-zinc-800/60 custom-scrollbar flex flex-col items-center bg-[#f5f2eb]/40 dark:bg-[#13151a]/30`}>
               <div className={`w-full ${maxWidthClass} prose prose-zinc dark:prose-invert font-serif-editor`}>
                 <h1 className="text-3xl font-extrabold pb-4 border-b border-zinc-100 dark:border-zinc-800 leading-tight">
                   {activeDoc?.title}
@@ -1165,7 +1165,7 @@ export default function App() {
       {/* --- FORMATTING TOOLBAR (BOTTOM CENTER) --- */}
       {settings.showFormattingToolbar && (
         <div
-          className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1a1a] shadow-xl border border-zinc-150 dark:border-zinc-800 px-4 py-2 rounded-full flex items-center space-x-1 z-35 transition-all duration-300 no-print max-w-[90vw] overflow-x-auto no-scrollbar flex-nowrap ${
+          className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#faf8f5] dark:bg-[#13151a] shadow-xl border border-zinc-150 dark:border-zinc-800 px-4 py-2 rounded-full flex items-center space-x-1 z-35 transition-all duration-300 no-print max-w-[90vw] overflow-x-auto no-scrollbar flex-nowrap ${
             uiVisible ? 'opacity-100 transform -translate-x-1/2' : 'opacity-0 translate-y-3 pointer-events-none'
           }`}
         >
@@ -1202,7 +1202,7 @@ export default function App() {
       {/* --- MODAL: SYNC & AUTH --- */}
       {syncModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1a1a1a] rounded-xl w-full max-w-md border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 relative">
+          <div className="bg-[#faf8f5] dark:bg-[#13151a] rounded-xl w-full max-w-md border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 relative">
             <button
               onClick={() => setSyncModalOpen(false)}
               className="absolute top-4 right-4 p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
@@ -1325,7 +1325,7 @@ export default function App() {
       {/* --- MODAL: SHORTCUTS GUIDE --- */}
       {shortcutsOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1a1a1a] rounded-xl w-full max-w-md border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 relative">
+          <div className="bg-[#faf8f5] dark:bg-[#13151a] rounded-xl w-full max-w-md border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 relative">
             <button
               onClick={() => setShortcutsOpen(false)}
               className="absolute top-4 right-4 p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
@@ -1381,7 +1381,7 @@ export default function App() {
       {/* --- MODAL: SHARING SYSTEM --- */}
       {shareModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1a1a1a] rounded-xl w-full max-w-md border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 relative">
+          <div className="bg-[#faf8f5] dark:bg-[#13151a] rounded-xl w-full max-w-md border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 relative">
             <button
               onClick={() => setShareModalOpen(false)}
               className="absolute top-4 right-4 p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
