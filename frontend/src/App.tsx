@@ -100,6 +100,15 @@ export default function App() {
   const [isReaderMode, setIsReaderMode] = useState(false);
   const [loadingShared, setLoadingShared] = useState(false);
 
+  // --- Zen Mode State ---
+  const [zenMode, setZenMode] = useState<boolean>(() => {
+    return localStorage.getItem('zen_mode') === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('zen_mode', zenMode ? 'true' : 'false');
+  }, [zenMode]);
+
   // --- Settings State ---
   interface EditorSettings {
     fontFamily: 'serif' | 'sans' | 'mono';
@@ -608,6 +617,11 @@ export default function App() {
         e.preventDefault();
         setSettings(prev => ({ ...prev, showWordCount: !prev.showWordCount }));
       }
+      // Toggle Zen mode (Ctrl + Shift + Z)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        setZenMode(prev => !prev);
+      }
     };
 
     window.addEventListener('keydown', handleGlobalShortcuts);
@@ -743,7 +757,7 @@ export default function App() {
       {/* --- TOP CHROME (HEADER) --- */}
       <header
         className={`fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-6 z-30 transition-all duration-300 no-print ${
-          uiVisible ? 'opacity-100 transform-none' : 'opacity-0 -translate-y-2 pointer-events-none'
+          uiVisible && !zenMode ? 'opacity-100 transform-none' : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
       >
         {/* Left Actions: Document Title & Sidebar Toggle */}
@@ -1060,6 +1074,17 @@ export default function App() {
                 />
               </div>
 
+              {/* Zen Mode */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-zinc-550 dark:text-zinc-400">Zen Mode (Ultra-minimal)</span>
+                <input
+                  type="checkbox"
+                  checked={zenMode}
+                  onChange={(e) => setZenMode(e.target.checked)}
+                  className="w-8 h-4 rounded-full bg-zinc-300 dark:bg-zinc-750 checked:bg-amber-500 appearance-none relative cursor-pointer before:absolute before:content-[''] before:h-3 before:w-3 before:bg-white before:rounded-full before:top-[2px] before:left-[2px] checked:before:translate-x-4 before:transition-transform duration-200"
+                />
+              </div>
+
               {/* Writing Target (Word Goal) */}
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
@@ -1126,7 +1151,7 @@ export default function App() {
 
         <div className="flex-1 flex flex-col md:flex-row items-stretch justify-center w-full min-h-0 overflow-hidden">
           {/* EDITOR SCREEN */}
-          {((!isMobile && (previewMode === 'editor' || previewMode === 'split')) || (isMobile && mobileTab === 'write')) && (
+          {(((!isMobile && (previewMode === 'editor' || previewMode === 'split')) || (isMobile && mobileTab === 'write')) || zenMode) && (
             <div
               className={`flex-1 flex flex-col items-center overflow-y-auto px-6 h-full custom-scrollbar transition-opacity duration-300 ${
                 settings.focusMode && !uiVisible ? 'opacity-85' : 'opacity-100'
@@ -1146,7 +1171,7 @@ export default function App() {
           )}
 
           {/* SPLIT / PREVIEW SCREEN */}
-          {((!isMobile && (previewMode === 'preview' || previewMode === 'split')) || (isMobile && mobileTab === 'preview')) && (
+          {((!isMobile && (previewMode === 'preview' || previewMode === 'split')) || (isMobile && mobileTab === 'preview')) && !zenMode && (
             <div className={`flex-1 overflow-y-auto px-8 py-6 h-full border-t-0 md:border-l border-zinc-200 dark:border-zinc-800/60 custom-scrollbar flex flex-col items-center bg-[#f5f2eb]/40 dark:bg-[#13151a]/30`}>
               <div className={`w-full ${maxWidthClass} markdown-body font-serif-editor`}>
                 <h1 className="text-3xl font-extrabold pb-4 border-b border-zinc-100 dark:border-zinc-800 leading-tight">
@@ -1163,7 +1188,7 @@ export default function App() {
       </main>
 
       {/* --- FORMATTING TOOLBAR (BOTTOM CENTER) --- */}
-      {settings.showFormattingToolbar && (
+      {settings.showFormattingToolbar && !zenMode && (
         <div
           className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#faf8f5] dark:bg-[#13151a] shadow-xl border border-zinc-150 dark:border-zinc-800 px-4 py-2 rounded-full flex items-center space-x-1 z-35 transition-all duration-300 no-print max-w-[90vw] overflow-x-auto no-scrollbar flex-nowrap ${
             uiVisible ? 'opacity-100 transform -translate-x-1/2' : 'opacity-0 translate-y-3 pointer-events-none'
@@ -1188,7 +1213,7 @@ export default function App() {
       )}
 
       {/* --- WORD & LINE COUNTS (BOTTOM RIGHT) --- */}
-      {settings.showWordCount && (
+      {settings.showWordCount && !zenMode && (
         <footer
           className={`fixed bottom-6 right-6 text-xs text-zinc-400 dark:text-zinc-550 z-30 transition-all duration-300 bg-white/60 dark:bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-md border border-zinc-150/40 dark:border-zinc-800/40 no-print ${
             uiVisible ? 'opacity-100 transform-none' : 'opacity-0 translate-y-1 pointer-events-none'
@@ -1371,6 +1396,10 @@ export default function App() {
                 <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
                   <span className="text-zinc-500">Toggle Word / Line Count</span>
                   <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + W</kbd>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                  <span className="text-zinc-500">Toggle Zen Mode (Centered Focus)</span>
+                  <kbd className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-xs font-mono">Ctrl + Shift + Z</kbd>
                 </div>
               </div>
             </div>
