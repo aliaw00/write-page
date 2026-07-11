@@ -696,7 +696,7 @@ export default function App() {
               </div>
             </header>
 
-            <article className="prose prose-zinc dark:prose-invert max-w-none flex-1 font-serif-editor">
+            <article className="markdown-body max-w-none flex-1 font-serif-editor">
               <h1 className="text-4xl font-extrabold mb-6 font-serif-editor leading-tight">{sharedDoc.title}</h1>
               <div
                 className="mt-6 text-lg leading-relaxed font-serif-editor"
@@ -1148,7 +1148,7 @@ export default function App() {
           {/* SPLIT / PREVIEW SCREEN */}
           {((!isMobile && (previewMode === 'preview' || previewMode === 'split')) || (isMobile && mobileTab === 'preview')) && (
             <div className={`flex-1 overflow-y-auto px-8 py-6 h-full border-t-0 md:border-l border-zinc-200 dark:border-zinc-800/60 custom-scrollbar flex flex-col items-center bg-[#f5f2eb]/40 dark:bg-[#13151a]/30`}>
-              <div className={`w-full ${maxWidthClass} prose prose-zinc dark:prose-invert font-serif-editor`}>
+              <div className={`w-full ${maxWidthClass} markdown-body font-serif-editor`}>
                 <h1 className="text-3xl font-extrabold pb-4 border-b border-zinc-100 dark:border-zinc-800 leading-tight">
                   {activeDoc?.title}
                 </h1>
