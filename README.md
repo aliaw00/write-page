@@ -3,6 +3,22 @@
 
 ---
 
+## Screenshots
+
+### Main Window
+
+![Minimal Write](images/main.png)
+
+### Light Theme
+
+![Minimal Write Light](images/light.png)
+
+### Settings
+
+![Minimal Write Settings](images/settings.png)
+
+---
+
 ## 🔍 What is Minimal Write? (Problem & Solution)
 
 Traditional writing apps are bloated with formatting tools, cluttered sidebars, telemetry trackers, and forced cloud dependencies that break when offline. 
